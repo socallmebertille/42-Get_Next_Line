@@ -3,43 +3,61 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: saberton <saberton@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bertille <bertille@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 19:01:03 by saberton          #+#    #+#             */
-/*   Updated: 2024/06/06 22:25:51 by saberton         ###   ########.fr       */
+/*   Updated: 2024/06/09 16:53:45 by bertille         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
+#include <stdio.h>
 
 char *get_next_line(int fd)
 {
-	char    *str;
-	char	*buffer;
-	int     i;
-	int     len;
+	static char    *str;
+	char			*buffer;
+	int   			i;
+	int   			len;
 
 	i = 0;
 	len = get_next_line_utils(fd);
-	buffer = (char *)malloc(sizeof(char) * (BUFFER_SIZE + 1));
-	if (len == 0 || !buffer)
+	//printf("%d\n", len);
+	if (len == 0)
 		return (NULL);
-	str = (char *)malloc(sizeof(char) * (len + 1));
-	while (read(fd, buffer, BUFFER_SIZE) != 0)
+	if (!str)
+		str = (char *)malloc(sizeof(char) * (len + 1));
+	buffer = (char *)malloc(sizeof(char) * (BUFFER_SIZE + 1));
+	if (!str || !buffer)
+		return (NULL);
+	while (read(fd, &buffer, BUFFER_SIZE) != 0)
 	{
-		if (read(fd, buffer, BUFFER_SIZE) == -1)
+		if (read(fd, &buffer, BUFFER_SIZE) == -1)
 			return (NULL);
-		if (fd == '\n')
+		if (i >= BUFFER_SIZE)
 		{
-			str[i++] = '\n';
+			str = ft_strjoin(str, buffer);
+			//printf("%s\n", str);
+			//printf("%s\n", buffer);
+			if (!str)
+				return (NULL);
+			buffer = (char *)malloc(sizeof(char) * (BUFFER_SIZE + 1));
+		}
+		if (buffer[i] == '\n')
+		{
+			str = ft_strjoin(str, buffer);
+			if (!str)
+				return (NULL);
 			return (str);
 		}
-		str[i++] = fd;
+		i++;
+		//*buffer++;
+		//printf("%c", str[i]);
+		//printf("%c\n", *buffer);
 	}
 	return (str);
 }
 
-#include <stdio.h>
 int main(void)
 {
 	int fd;
@@ -50,8 +68,9 @@ int main(void)
 		write(2, "Cannot read file.\n", 18);
 		return (1);
 	}
-	while (get_next_line(fd))
-		printf("%s", get_next_line(fd));
+	printf("%s", get_next_line(fd));
+	//while (get_next_line(fd))
+	//	printf("%s", get_next_line(fd));
 	close(fd);
 	if (close(fd) == -1)
 		return (1);
