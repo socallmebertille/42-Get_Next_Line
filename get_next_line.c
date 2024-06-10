@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bertille <bertille@student.42.fr>          +#+  +:+       +#+        */
+/*   By: saberton <saberton@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 19:01:03 by saberton          #+#    #+#             */
-/*   Updated: 2024/06/09 16:53:45 by bertille         ###   ########.fr       */
+/*   Updated: 2024/06/10 18:00:39 by saberton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,62 +15,56 @@
 
 char *get_next_line(int fd)
 {
-	static char    *str;
-	char			*buffer;
-	int   			i;
-	int   			len;
+	char	*temp;
+	static char		*current;
+	char		buffer[BUFFER_SIZE + 1];
+	size_t 		i;
 
-	i = 0;
-	len = get_next_line_utils(fd);
-	//printf("%d\n", len);
-	if (len == 0)
-		return (NULL);
-	if (!str)
-		str = (char *)malloc(sizeof(char) * (len + 1));
-	buffer = (char *)malloc(sizeof(char) * (BUFFER_SIZE + 1));
-	if (!str || !buffer)
-		return (NULL);
-	while (read(fd, &buffer, BUFFER_SIZE) != 0)
+	// if (temp == NULL)
+	// 	temp = "";
+	// if (read(fd, buffer, BUFFER_SIZE) == 0)
+	// 	return (temp);
+	temp = NULL;
+	if (current && read(fd, buffer, BUFFER_SIZE) != 0)
+		temp = ft_strjoin(temp, current);
+	else
 	{
-		if (read(fd, &buffer, BUFFER_SIZE) == -1)
-			return (NULL);
-		if (i >= BUFFER_SIZE)
-		{
-			str = ft_strjoin(str, buffer);
-			//printf("%s\n", str);
-			//printf("%s\n", buffer);
-			if (!str)
-				return (NULL);
-			buffer = (char *)malloc(sizeof(char) * (BUFFER_SIZE + 1));
-		}
-		if (buffer[i] == '\n')
-		{
-			str = ft_strjoin(str, buffer);
-			if (!str)
-				return (NULL);
-			return (str);
-		}
-		i++;
-		//*buffer++;
-		//printf("%c", str[i]);
-		//printf("%c\n", *buffer);
+		current = NULL;
+		temp = ft_strjoin(temp, current);
 	}
-	return (str);
+	while (read(fd, buffer, BUFFER_SIZE) != 0)
+	{
+		buffer[BUFFER_SIZE] = '\0';
+		i = 0;
+		while (buffer[i])
+		{
+			if (buffer[i] == '\n')
+			{
+				temp = ft_strjoin(temp, ft_substr(buffer, 0, i + 1));
+				current = ft_substr(buffer, i + 1, BUFFER_SIZE - i);
+				return (temp);
+			}
+			i++;
+		}
+		temp = ft_strjoin(temp, buffer);
+	}
+	return (temp);
 }
 
 int main(void)
 {
 	int fd;
 
-	fd = open("get_next_line.c", O_RDONLY);
+	//fd = open("get_next_line.c", O_RDONLY);
+	fd = open("test.txt", O_RDONLY);
 	if (fd == -1)
 	{
 		write(2, "Cannot read file.\n", 18);
 		return (1);
 	}
-	printf("%s", get_next_line(fd));
-	//while (get_next_line(fd))
-	//	printf("%s", get_next_line(fd));
+	//printf("next_line : %s", get_next_line(fd));
+	for (int i = 0; i < 4; i++)
+		printf("%s", get_next_line(fd));
 	close(fd);
 	if (close(fd) == -1)
 		return (1);
