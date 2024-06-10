@@ -6,7 +6,7 @@
 /*   By: saberton <saberton@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 19:01:03 by saberton          #+#    #+#             */
-/*   Updated: 2024/06/10 18:00:39 by saberton         ###   ########.fr       */
+/*   Updated: 2024/06/10 18:25:59 by saberton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,13 +23,13 @@ char *get_next_line(int fd)
 	// if (temp == NULL)
 	// 	temp = "";
 	// if (read(fd, buffer, BUFFER_SIZE) == 0)
-	// 	return (temp);
-	temp = NULL;
-	if (current && read(fd, buffer, BUFFER_SIZE) != 0)
+	// 	return (NULL);
+	temp = ft_strdup("");
+	if (current)
 		temp = ft_strjoin(temp, current);
 	else
 	{
-		current = NULL;
+		current = ft_strdup("");
 		temp = ft_strjoin(temp, current);
 	}
 	while (read(fd, buffer, BUFFER_SIZE) != 0)
@@ -48,6 +48,14 @@ char *get_next_line(int fd)
 		}
 		temp = ft_strjoin(temp, buffer);
 	}
+	if ((*current == '\0' && read(fd, buffer, BUFFER_SIZE) == 0) 
+		|| read(fd, buffer, BUFFER_SIZE) == -1)
+	{
+		free(current);
+		current = NULL;
+		return (NULL);
+	}
+	//temp = current;
 	return (temp);
 }
 
