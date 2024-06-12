@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line_utils.c                              :+:      :+:    :+:   */
+/*   get_next_line_utilsTH.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: saberton <saberton@student.42.fr>          +#+  +:+       +#+        */
+/*   By: tnedel <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/06/06 19:00:57 by saberton          #+#    #+#             */
-/*   Updated: 2024/06/12 15:27:55 by saberton         ###   ########.fr       */
+/*   Created: 2024/06/11 14:19:04 by tnedel            #+#    #+#             */
+/*   Updated: 2024/06/12 16:10:32 by saberton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_lineTH.h"
 
 int	ft_strlen(char *str)
 {
@@ -24,25 +24,14 @@ int	ft_strlen(char *str)
 	return (i);
 }
 
-char	*ft_strdup(const char *s)
+void	ft_bzero(void *p, size_t n)
 {
-	char	*dup;
-	int		i;
+	char	*s;
 
-	i = 0;
-	while (s[i])
-		i++;
-	dup = (char *)malloc(sizeof(char) * (i + 1));
-	if (!dup)
-		return (NULL);
-	i = 0;
-	while (s[i])
-	{
-		dup[i] = s[i];
-		i++;
-	}
-	dup[i] = '\0';
-	return (dup);
+	s = (char *)p;
+	while (n-- > 0)
+		*s++ = '\0';
+	return ;
 }
 
 char	*ft_strjoin(char *s1, char *s2)
@@ -51,15 +40,18 @@ char	*ft_strjoin(char *s1, char *s2)
 	size_t	len;
 	size_t	i;
 
-	if (!s1 || !s2)
+	if (!s1 && !s2)
 		return (NULL);
 	len = ft_strlen(s1) + ft_strlen(s2);
 	join = (char *)malloc(sizeof(char) * (len + 1));
 	if (!join)
 		return (NULL);
 	i = 0;
-	while (*s1 && i < len)
-		join[i++] = *s1++;
+	if (s1)
+	{
+		while (*s1 && i < len)
+			join[i++] = *s1++;
+	}
 	while (*s2 && i < len)
 		join[i++] = *s2++;
 	join[i] = '\0';
@@ -90,4 +82,19 @@ char	*ft_substr(char const *s, unsigned int start, size_t len)
 		sub[i++] = s[start++];
 	sub[i] = '\0';
 	return (sub);
+}
+
+void	*ft_calloc(size_t nmemb, size_t size)
+{
+	void	*ptr;
+	size_t	len;
+
+	len = nmemb * size;
+	if (nmemb != 0 && len / nmemb != size)
+		return (NULL);
+	ptr = malloc(len);
+	if (!ptr)
+		return (NULL);
+	ft_bzero(ptr, len);
+	return (ptr);
 }
