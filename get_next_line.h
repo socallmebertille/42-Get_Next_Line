@@ -6,7 +6,7 @@
 /*   By: saberton <saberton@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 19:01:06 by saberton          #+#    #+#             */
-/*   Updated: 2024/06/12 15:17:39 by saberton         ###   ########.fr       */
+/*   Updated: 2024/06/13 14:29:20 by saberton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,8 @@
 #  define BUFFER_SIZE 1
 # endif
 
-int	get_nb_line(int fd);
-char    *get_next_line2(int fd);
+//int	get_nb_line(int fd);
+//char    *get_next_line2(int fd);
 char	*get_next_line(int fd);
 int		ft_strlen(char *str);
 char	*ft_strdup(const char *s);

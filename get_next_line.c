@@ -6,7 +6,7 @@
 /*   By: saberton <saberton@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 19:01:03 by saberton          #+#    #+#             */
-/*   Updated: 2024/06/12 15:17:59 by saberton         ###   ########.fr       */
+/*   Updated: 2024/06/13 15:31:03 by saberton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,15 +19,8 @@ char	*get_next_line(int fd)
 	static char	*current;
 	char		buffer[BUFFER_SIZE + 1];
 	size_t		i;
+	size_t		bytes_read;
 
-	// if (temp == NULL)
-	//  	temp = "";
-	// if (read(fd, buffer, BUFFER_SIZE) == 0 && buffer[0] == '\0')
-	// {
-	// 	free(current);
-	// 	current = NULL;
-	//   	return (NULL);
-	// }
 	temp = ft_strdup("");
 	if (current)
 		temp = ft_strjoin(temp, current);
@@ -36,9 +29,9 @@ char	*get_next_line(int fd)
 		current = ft_strdup("");
 		temp = ft_strjoin(temp, current);
 	}
-	while (read(fd, buffer, BUFFER_SIZE) != 0)
+	while ((bytes_read = read(fd, buffer, BUFFER_SIZE)) > 0)
 	{
-		buffer[BUFFER_SIZE] = '\0';
+		buffer[bytes_read] = '\0';
 		i = 0;
 		while (buffer[i])
 		{
@@ -48,43 +41,37 @@ char	*get_next_line(int fd)
 				current = ft_substr(buffer, i + 1, BUFFER_SIZE - i);
 				return (temp);
 			}
-			if (buffer[i] == '\0')
-			{
-				current = NULL;
-				temp = ft_strjoin(temp, current);
-				return (temp);
-			}
 			i++;
 		}
 		temp = ft_strjoin(temp, buffer);
+		//current = NULL;
 	}
-	// if ((*current == '\0' && read(fd, buffer, BUFFER_SIZE) == 0)
-	// 	|| read(fd, buffer, BUFFER_SIZE) == -1)
-	// {
-	// 	free(current);
-	// 	current = NULL;
-	// 	return (NULL);
-	// }
-	//temp = current;
+	if (bytes_read == 0 || current != NULL)
+	{
+		current = NULL;
+		temp = ft_strjoin(temp, current);
+	}
 	return (temp);
 }
 
-// int main(void)
-// {
-// 	int fd;
+int main(void)
+{
+	int fd;
 
-// 	//fd = open("get_next_line.c", O_RDONLY);
-// 	fd = open("test.txt", O_RDONLY);
-// 	if (fd == -1)
-// 	{
-// 		write(2, "Cannot read file.\n", 18);
-// 		return (1);
-// 	}
-// 	//printf("next_line : %s", get_next_line(fd));
-// 	for (int i = 0; i < 5; i++)
-// 		printf("%s", get_next_line(fd));
-// 	close(fd);
-// 	if (close(fd) == -1)
-// 		return (1);
-// 	return (0);
-// }
+	// fd = open("get_next_line.c", O_RDONLY);
+	fd = open("test.txt", O_RDONLY);
+	if (fd == -1)
+	{
+		write(2, "Cannot read file.\n", 18);
+		return (1);
+	}
+	for (int i = 0; i < 5; i++)
+	{
+		printf("%s", get_next_line(fd));
+		//free(get_next_line(fd));
+	}
+	close(fd);
+	if (close(fd) == -1)
+		return (1);
+	return (0);
+}
