@@ -6,7 +6,7 @@
 /*   By: saberton <saberton@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 19:01:03 by saberton          #+#    #+#             */
-/*   Updated: 2024/06/13 15:31:03 by saberton         ###   ########.fr       */
+/*   Updated: 2024/06/15 23:03:15 by saberton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,63 +15,86 @@
 
 char	*get_next_line(int fd)
 {
+	char		*line;
 	char		*temp;
-	static char	*current;
-	char		buffer[BUFFER_SIZE + 1];
+	static char	*remains;
+	char		*buffer;
 	size_t		i;
-	size_t		bytes_read;
 
-	temp = ft_strdup("");
-	if (current)
-		temp = ft_strjoin(temp, current);
-	else
+	line = NULL;
+	if (remains)
 	{
-		current = ft_strdup("");
-		temp = ft_strjoin(temp, current);
+		line = ft_strdup(remains);
+		free(remains);
+		remains = NULL;
 	}
-	while ((bytes_read = read(fd, buffer, BUFFER_SIZE)) > 0)
+	buffer = (char *)calloc((BUFFER_SIZE + 1), sizeof(char));
+	if (!buffer)
+		return (NULL);
+	while (read(fd, buffer, BUFFER_SIZE) > 0)
 	{
-		buffer[bytes_read] = '\0';
+		// printf("buffer : %s\n", buffer);
+		// if (buffer[0] == '\0')
+		// 	return (NULL);
+		// buffer[BUFFER_SIZE] = '\0';
 		i = 0;
 		while (buffer[i])
 		{
 			if (buffer[i] == '\n')
 			{
-				temp = ft_strjoin(temp, ft_substr(buffer, 0, i + 1));
-				current = ft_substr(buffer, i + 1, BUFFER_SIZE - i);
-				return (temp);
+				temp = ft_strdup(line);
+				free(line);
+				remains = ft_substr(buffer, 0, i + 1);
+				line = ft_strjoin(temp, remains);
+				free(temp);
+				free(remains);
+				remains = NULL;
+				if (i + 1 < BUFFER_SIZE)
+					remains = ft_substr(buffer, i + 1, BUFFER_SIZE - i);
+				free(buffer);
+				// buffer = NULL;
+				return (line);
 			}
 			i++;
 		}
-		temp = ft_strjoin(temp, buffer);
-		//current = NULL;
+		// if (buffer[0] == '\0')
+		// 	return (NULL);
+		temp = ft_strdup(line);
+		if (line)
+			free(line);
+		line = ft_strjoin(temp, buffer);
+		free(buffer);
+		buffer = (char *)calloc((BUFFER_SIZE + 1), sizeof(char));
+		free(temp);
 	}
-	if (bytes_read == 0 || current != NULL)
-	{
-		current = NULL;
-		temp = ft_strjoin(temp, current);
-	}
-	return (temp);
+	free(buffer);
+	return (line);
 }
 
-int main(void)
+/*int main(void)
 {
 	int fd;
+	int len = 6;
+	char **line = (char **)malloc(sizeof(char *) * (len + 1));
 
 	// fd = open("get_next_line.c", O_RDONLY);
-	fd = open("test.txt", O_RDONLY);
+	fd = open("multiple_nlx5", O_RDONLY);
+	// fd = open("test.txt", O_RDONLY);
 	if (fd == -1)
 	{
 		write(2, "Cannot read file.\n", 18);
 		return (1);
 	}
-	for (int i = 0; i < 5; i++)
+	for (int i = 0; i < len; i++)
 	{
-		printf("%s", get_next_line(fd));
-		//free(get_next_line(fd));
+		line[i] = get_next_line(fd);
+		printf("%s", line[i]);
 	}
+	for (int i = 0; i < len; i++)
+		free(line[i]);
+	free(line);
 	close(fd);
 	if (close(fd) == -1)
 		return (1);
 	return (0);
-}
+}*/

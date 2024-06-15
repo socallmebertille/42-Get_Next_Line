@@ -6,7 +6,7 @@
 /*   By: saberton <saberton@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 19:00:57 by saberton          #+#    #+#             */
-/*   Updated: 2024/06/12 15:27:55 by saberton         ###   ########.fr       */
+/*   Updated: 2024/06/15 22:20:50 by saberton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,9 +29,15 @@ char	*ft_strdup(const char *s)
 	char	*dup;
 	int		i;
 
-	i = 0;
-	while (s[i])
-		i++;
+	if (!s)
+	{
+		dup = malloc(1);
+		if (!dup)
+			return (NULL);
+		dup[0] = '\0';
+		return (dup);
+	}
+	i = ft_strlen((char *)s);
 	dup = (char *)malloc(sizeof(char) * (i + 1));
 	if (!dup)
 		return (NULL);
@@ -51,16 +57,14 @@ char	*ft_strjoin(char *s1, char *s2)
 	size_t	len;
 	size_t	i;
 
-	if (!s1 || !s2)
-		return (NULL);
 	len = ft_strlen(s1) + ft_strlen(s2);
 	join = (char *)malloc(sizeof(char) * (len + 1));
-	if (!join)
+	if (!join || !s1 || !s2)
 		return (NULL);
 	i = 0;
-	while (*s1 && i < len)
+	while (*s1)
 		join[i++] = *s1++;
-	while (*s2 && i < len)
+	while (*s2)
 		join[i++] = *s2++;
 	join[i] = '\0';
 	return (join);
@@ -78,7 +82,10 @@ char	*ft_substr(char const *s, unsigned int start, size_t len)
 	lens = ft_strlen((char *)s);
 	if (start >= lens)
 	{
-		sub = "";
+		sub = malloc(1);
+		if (!sub)
+			return (NULL);
+		sub[0] = '\0';
 		return (sub);
 	}
 	if (len > lens - start)
@@ -86,7 +93,7 @@ char	*ft_substr(char const *s, unsigned int start, size_t len)
 	sub = (char *)malloc(sizeof(char) * (len + 1));
 	if (!sub)
 		return (NULL);
-	while (s[start] != '\0' && i < len && len != 0)
+	while (s[start] != '\0' && i < len)
 		sub[i++] = s[start++];
 	sub[i] = '\0';
 	return (sub);
