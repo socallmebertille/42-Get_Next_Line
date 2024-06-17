@@ -6,7 +6,7 @@
 /*   By: saberton <saberton@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 19:00:57 by saberton          #+#    #+#             */
-/*   Updated: 2024/06/15 22:20:50 by saberton         ###   ########.fr       */
+/*   Updated: 2024/06/17 23:18:04 by saberton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,24 @@ int	ft_strlen(char *str)
 	while (str[i])
 		i++;
 	return (i);
+}
+
+void	*ft_calloc(size_t nmemb, size_t size)
+{
+	void	*ptr;
+	char	*p;
+	size_t	len;
+
+	len = nmemb * size;
+	if (nmemb != 0 && len / nmemb != size)
+		return (NULL);
+	ptr = malloc(len);
+	if (!ptr)
+		return (NULL);
+	p = ptr;
+	while (len-- > 0)
+		*p++ = '\0';
+	return (ptr);
 }
 
 char	*ft_strdup(const char *s)
