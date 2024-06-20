@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line_utils.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: saberton <saberton@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bertille <bertille@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 19:00:57 by saberton          #+#    #+#             */
-/*   Updated: 2024/06/17 23:18:04 by saberton         ###   ########.fr       */
+/*   Updated: 2024/06/20 00:04:19 by bertille         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,13 +48,7 @@ char	*ft_strdup(const char *s)
 	int		i;
 
 	if (!s)
-	{
-		dup = malloc(1);
-		if (!dup)
-			return (NULL);
-		dup[0] = '\0';
-		return (dup);
-	}
+		return (NULL);
 	i = ft_strlen((char *)s);
 	dup = (char *)malloc(sizeof(char) * (i + 1));
 	if (!dup)
@@ -99,13 +93,7 @@ char	*ft_substr(char const *s, unsigned int start, size_t len)
 		return (NULL);
 	lens = ft_strlen((char *)s);
 	if (start >= lens)
-	{
-		sub = malloc(1);
-		if (!sub)
-			return (NULL);
-		sub[0] = '\0';
-		return (sub);
-	}
+		return (ft_strdup(""));
 	if (len > lens - start)
 		len = lens - start;
 	sub = (char *)malloc(sizeof(char) * (len + 1));

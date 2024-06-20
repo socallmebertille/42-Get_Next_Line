@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.h                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: saberton <saberton@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bertille <bertille@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 19:01:06 by saberton          #+#    #+#             */
-/*   Updated: 2024/06/17 23:22:48 by saberton         ###   ########.fr       */
+/*   Updated: 2024/06/20 00:01:52 by bertille         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,6 @@
 #  define BUFFER_SIZE 42
 # endif
 
-//int	get_nb_line(int fd);
-//char    *get_next_line2(int fd);
 char	*get_next_line(int fd);
 int		ft_strlen(char *str);
 void	*ft_calloc(size_t nmemb, size_t size);
