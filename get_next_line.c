@@ -6,7 +6,7 @@
 /*   By: saberton <saberton@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 19:01:03 by saberton          #+#    #+#             */
-/*   Updated: 2024/06/21 21:07:17 by saberton         ###   ########.fr       */
+/*   Updated: 2024/06/23 17:44:55 by saberton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ char	*get_next_line(int fd)
 	line = NULL;
 	if (fd < 0 || BUFFER_SIZE <= 0 || BUFFER_SIZE > INT_MAX - 1)
 		return (NULL);
-	buffer = (char *)malloc((BUFFER_SIZE + 1) * sizeof(char));
+	buffer = (char *)malloc(sizeof(char) * (BUFFER_SIZE + 1));
 	if (!buffer)
 		return (NULL);
 	bytes_read = read(fd, buffer, BUFFER_SIZE);
@@ -52,18 +52,14 @@ char	*get_next_line(int fd)
 		temp = remains;
 		remains = ft_strjoin(remains, buffer);
 		// printf("remains [%s] de taille [%d]\n", remains, ft_strlen(remains));
-		if (temp)
-			free(temp);
+		free(temp);
 		end = get_end_line(remains);
 		if (end != -1)
 		{
 			line = ft_substr(remains, 0, end + 1);
 			// printf("end line [%zu] line [%s] de taille [%d]\n", end + 1, line, ft_strlen(line));
 			temp = remains;
-			if (remains[end + 1])
-				remains = ft_strjoin(remains + end + 1, "");
-			else
-				remains = NULL;
+			remains = ft_strjoin("", remains + end + 1);
 			free(temp);
 			free(buffer);
 			return (line);
@@ -87,14 +83,11 @@ char	*get_next_line(int fd)
 		{
 			line = ft_substr(remains, 0, end + 1);
 			temp = remains;
-			if (remains[end + 1])
-				remains = ft_strjoin(remains + end + 1, "");
-			else
-				remains = NULL;
+			remains = ft_strjoin("", remains + end + 1);
 			free(temp);
 			return (line);
 		}
-		line = ft_strjoin(remains, "");
+		line = ft_strjoin("", remains);
 		// printf("end line [%d] line [%s] de taille [%d]\n", end + 1, line, ft_strlen(remains));
 		free(remains);
 		remains = NULL;

@@ -6,7 +6,7 @@
 /*   By: saberton <saberton@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 19:00:57 by saberton          #+#    #+#             */
-/*   Updated: 2024/06/21 20:13:09 by saberton         ###   ########.fr       */
+/*   Updated: 2024/06/23 17:44:15 by saberton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,8 +32,8 @@ char	*ft_strjoin(char *s1, char *s2)
 
 	if (!s1)
 		s1 = "";
-	if (!s2)
-		s2 = "";
+	if (s2[0] == '\0')
+		return (NULL);
 	len = ft_strlen(s1) + ft_strlen(s2);
 	join = (char *)malloc(sizeof(char) * (len + 1));
 	if (!join)
