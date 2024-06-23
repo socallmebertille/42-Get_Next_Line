@@ -30,61 +30,69 @@ static int	get_end_line(char *remains)
 	return (-1);
 }
 
-static char *get_remains(char *remains, int end)
+static char	*get_line(char **remains, int end, int bytes_read)
 {
-	char *line;
-	char *temp;
+	char	*line;
+	char	*temp;
 
-	temp = remains;
-	line = ft_substr(remains, 0, end + 1);
-	remains = ft_strjoin("", remains + end + 1);
-	printf("remains [%s] de taille [%d]\n", remains, ft_strlen(remains));
-	if (!remains && temp[end + 1])
+	if (end != -1)
 	{
+		line = ft_substr(*remains, 0, end + 1);
+		temp = *remains;
+		*remains = ft_strjoin("", *remains + end + 1);
+		if (!*remains && temp[end + 1])
+		{
+			free(temp);
+			return (NULL);
+		}
 		free(temp);
-		return (NULL);
+		return (line);
 	}
-	free(temp);
-	return (line);
+	if (bytes_read == 0)
+	{
+		line = ft_strjoin("", *remains);
+		free(*remains);
+		*remains = NULL;
+		return (line);
+	}
+	return (NULL);
 }
 
-static char *get_buffer(char **remains, char *buffer, int bytes_read)
+static char	*get_remains(char **remains, char *buffer, int bytes_read)
 {
-	char	*temp;
 	int		end;
+	char	*temp;
+	char	*line;
 
+	if (*remains && bytes_read == -1)
+	{
+		free(*remains);
+		*remains = NULL;
+		return (NULL);
+	}
 	buffer[bytes_read] = '\0';
+	line = NULL;
 	temp = *remains;
 	*remains = ft_strjoin(*remains, buffer);
 	free(temp);
 	end = get_end_line(*remains);
-	if (end != -1)
-		return (get_remains(*remains, end));
+	if (end != -1 || bytes_read == 0)
+		line = get_line(remains, end, bytes_read);
+	if (line)
+	{
+		free(buffer);
+		return (line);
+	}
 	return (NULL);
-}
-
-static char *get_line(char **remains)
-{
-	char	*line;
-    int		end;
-	
-	end = get_end_line(*remains);
-	if (end != -1)
-		return (get_remains(*remains, end));
-	line = ft_strjoin("", *remains);
-	free(*remains);
-	*remains = NULL;
-	return (line);
 }
 
 char	*get_next_line(int fd)
 {
-	char		*line;
-	static char	*remains;
-	char		*buffer;
 	int			bytes_read;
+	char		*line;
+	char		*buffer;
+	static char	*remains;
 
-	line = NULL;
 	if (fd < 0 || BUFFER_SIZE <= 0 || BUFFER_SIZE > INT_MAX - 1)
 		return (NULL);
 	buffer = (char *)malloc(sizeof(char) * (BUFFER_SIZE + 1));
@@ -93,26 +101,16 @@ char	*get_next_line(int fd)
 	bytes_read = read(fd, buffer, BUFFER_SIZE);
 	while (bytes_read > 0)
 	{
-		line = get_buffer(&remains, buffer, bytes_read);
+		line = get_remains(&remains, buffer, bytes_read);
 		if (line)
-		{
-			free(buffer);
 			return (line);
-		}
 		bytes_read = read(fd, buffer, BUFFER_SIZE);
 	}
 	free(buffer);
-	if (bytes_read == -1)
-	{
-		if (remains)
-		{
-			free(remains);
-			remains = NULL;
-		}
-		return (NULL);
-	}
-	if (remains)
-		return (get_line(&remains));
+	if (remains && bytes_read == -1)
+		return (get_remains(&remains, NULL, bytes_read));
+	if (remains && bytes_read != -1)
+		return (get_line(&remains, get_end_line(remains), bytes_read));
 	return (NULL);
 }
 
