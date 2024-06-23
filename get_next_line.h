@@ -6,7 +6,7 @@
 /*   By: saberton <saberton@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 19:01:06 by saberton          #+#    #+#             */
-/*   Updated: 2024/06/21 21:03:42 by saberton         ###   ########.fr       */
+/*   Updated: 2024/06/23 20:02:17 by saberton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,6 @@
 #  define BUFFER_SIZE 1000000
 # endif
 
-int		get_end_line(char *buffer);
 char	*get_next_line(int fd);
 int		ft_strlen(char *str);
 void	*ft_calloc(size_t nmemb, size_t size);

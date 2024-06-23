@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                              :+:      :+:    :+:   */
+/*   get_next_line_passplit.c                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: saberton <saberton@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 19:01:03 by saberton          #+#    #+#             */
-/*   Updated: 2024/06/23 18:50:44 by saberton         ###   ########.fr       */
+/*   Updated: 2024/06/23 20:15:02 by saberton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,74 +14,29 @@
 #include <stdio.h>
 #include <limits.h>
 
-static int	get_end_line(char *remains)
+int	get_end_line(char *buffer)
 {
 	int	i;
 
 	i = 0;
-	if (!remains)
+	if (!buffer)
 		return (-1);
-	while (remains[i])
+	while (buffer[i])
 	{
-		if (remains[i] == '\n')
+		if (buffer[i] == '\n')
 			return (i);
 		i++;
 	}
 	return (-1);
 }
 
-static char *get_remains(char *remains, int end)
-{
-	char *line;
-	char *temp;
-
-	temp = remains;
-	line = ft_substr(remains, 0, end + 1);
-	remains = ft_strjoin("", remains + end + 1);
-	printf("remains [%s] de taille [%d]\n", remains, ft_strlen(remains));
-	if (!remains && temp[end + 1])
-	{
-		free(temp);
-		return (NULL);
-	}
-	free(temp);
-	return (line);
-}
-
-static char *get_buffer(char **remains, char *buffer, int bytes_read)
-{
-	char	*temp;
-	int		end;
-
-	buffer[bytes_read] = '\0';
-	temp = *remains;
-	*remains = ft_strjoin(*remains, buffer);
-	free(temp);
-	end = get_end_line(*remains);
-	if (end != -1)
-		return (get_remains(*remains, end));
-	return (NULL);
-}
-
-static char *get_line(char **remains)
-{
-	char	*line;
-    int		end;
-	
-	end = get_end_line(*remains);
-	if (end != -1)
-		return (get_remains(*remains, end));
-	line = ft_strjoin("", *remains);
-	free(*remains);
-	*remains = NULL;
-	return (line);
-}
-
 char	*get_next_line(int fd)
 {
 	char		*line;
+	char		*temp;
 	static char	*remains;
 	char		*buffer;
+	int			end;
 	int			bytes_read;
 
 	line = NULL;
@@ -93,9 +48,24 @@ char	*get_next_line(int fd)
 	bytes_read = read(fd, buffer, BUFFER_SIZE);
 	while (bytes_read > 0)
 	{
-		line = get_buffer(&remains, buffer, bytes_read);
-		if (line)
+		buffer[bytes_read] = '\0';
+		temp = remains;
+		remains = ft_strjoin(remains, buffer);
+		// printf("remains [%s] de taille [%d]\n", remains, ft_strlen(remains));
+		free(temp);
+		end = get_end_line(remains);
+		if (end != -1)
 		{
+			line = ft_substr(remains, 0, end + 1);
+			// printf("end line [%zu] line [%s] de taille [%d]\n", end + 1, line, ft_strlen(line));
+			temp = remains;
+			remains = ft_strjoin("", remains + end + 1);
+			if (!remains && temp[end + 1])
+			{
+				free(temp);
+				return (NULL);
+			}
+			free(temp);
 			free(buffer);
 			return (line);
 		}
@@ -112,7 +82,27 @@ char	*get_next_line(int fd)
 		return (NULL);
 	}
 	if (remains)
-		return (get_line(&remains));
+	{
+		end = get_end_line(remains);
+		if (end != -1)
+		{
+			line = ft_substr(remains, 0, end + 1);
+			temp = remains;
+			remains = ft_strjoin("", remains + end + 1);
+			if (!remains && temp[end + 1])
+			{
+				free(temp);
+				return (NULL);
+			}
+			free(temp);
+			return (line);
+		}
+		line = ft_strjoin("", remains);
+		// printf("end line [%d] line [%s] de taille [%d]\n", end + 1, line, ft_strlen(remains));
+		free(remains);
+		remains = NULL;
+		return (line);
+	}
 	return (NULL);
 }
 
@@ -121,9 +111,9 @@ char	*get_next_line(int fd)
 	int fd;
 	char *str;
 
-	fd = open("read_error.txt", O_RDONLY);
+	// fd = open("read_error.txt", O_RDONLY);
 	// fd = open("nltest", O_RDONLY);
-	// fd = open("multiple_nl.txt", O_RDONLY);
+	fd = open("multiple_nl.txt", O_RDONLY);
 	if (fd == -1)
 	{
 		write(2, "Cannot read file.\n", 18);
