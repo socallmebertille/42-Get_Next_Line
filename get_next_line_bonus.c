@@ -6,7 +6,7 @@
 /*   By: saberton <saberton@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/24 13:46:28 by saberton          #+#    #+#             */
-/*   Updated: 2024/06/24 14:42:37 by saberton         ###   ########.fr       */
+/*   Updated: 2024/06/24 14:52:26 by saberton         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,8 +111,8 @@ char	*get_next_line(int fd)
 		return (get_line(&remains[fd], get_end_line(remains[fd]), bytes_read));
 	return (NULL);
 }
-/* 
-#include <stdio.h>
+
+/*#include <stdio.h>
 
 int main(void)
 {
@@ -120,63 +120,30 @@ int main(void)
 	int		fd1;
 	int		fd2;
 	int		fd3;
-
 	char	*str;
 
 	fd1 = open("get_next_line.h", O_RDONLY);
 	fd2 = open("get_next_line_utils.c", O_RDONLY);
 	fd3 = open("get_next_line.c", O_RDONLY);
-	// for (int i = 0; fd[i]; i++)
-	// {
-	// 	close(fd[i]);
-	// 	if (close(fd[i]) == -1)
-	// 		return (1);
-	// 	if (fd[i] == -1)
-	// 	{
-	// 		printf("Cannot read file %d.\n", i + 1);
-	// 		return (1);
-	// 	}
-	// }
-	// line = 0;
-	// while ((str = get_next_line_bonus(fd[line])) != NULL)
-	// {
-	// 	line = 0;
-	// 	while ((str = get_next_line_bonus(fd[line])) != NULL && fd[line])
-	// 	{
-	// 		printf("fd [%d] line = %s", line, str);
-	// 		free(str);
-	// 		line++;
-	// 	}
-	// }
-	// line = 0;
-	// while (fd[line])
-	// {
-	// 	str = get_next_line_bonus(fd[line]);
-	// 	printf("last line = %s", str);
-	// 	free(str);
-	// 	line++;
-	// }
-	// for (int i = 0; i < 3; i++)
-	// {
-	// 	close(fd[i]);
-	// 	if (close(fd[i]) == -1)
-	// 		return (1);
-	// }
-	// return (0);
+	if (fd1 == -1 || fd2 == -1 || fd3 == -1)
+	{
+		printf("Cannot read file.\n");
+		return (1);
+	}
 	while (line <= 5)
 	{
-		str = get_next_line_bonus(fd1);
+		str = get_next_line(fd1);
 		printf("%s\n", str);
-		str = get_next_line_bonus(fd2);
+		str = get_next_line(fd2);
 		printf("%s\n", str);
-		str = get_next_line_bonus(fd3);
+		str = get_next_line(fd3);
 		printf("%s\n", str);
 		line++;
 	}
-	// while ((str = get_next_line_bonus(fd[line])) != NULL && fd[line])
-	// 	{
-	// 		printf("fd [%d] line = %s", line, str);
-	// 		free(str);
-	// 		line++;
-	// 	}
-} */
+	close(fd1);
+	close(fd2);
+	close(fd3);
+	if (close(fd1) == -1 || close(fd2) == -1 || close(fd3) == -1)
+		return (1);
+	return (0);
+}*/
