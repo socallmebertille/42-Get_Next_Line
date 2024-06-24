@@ -11,8 +11,6 @@
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-#include <stdio.h>
-#include <limits.h>
 
 static int	get_end_line(char *remains)
 {
@@ -114,14 +112,16 @@ char	*get_next_line(int fd)
 	return (NULL);
 }
 
-/*int main(void)
+/*#include <stdio.h>
+
+int main(void)
 {
 	int fd;
 	char *str;
 
-	fd = open("read_error.txt", O_RDONLY);
+	// fd = open("read_error.txt", O_RDONLY);
 	// fd = open("nltest", O_RDONLY);
-	// fd = open("multiple_nl.txt", O_RDONLY);
+	fd = open("get_next_line.c", O_RDONLY);
 	if (fd == -1)
 	{
 		write(2, "Cannot read file.\n", 18);
