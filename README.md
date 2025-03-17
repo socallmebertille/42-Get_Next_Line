@@ -23,7 +23,7 @@ Concretement, on va concatener les nouveaux morceaux de texte jusqu'à trouver u
 
 Une fois une ligne complète trouvée, elle est renvoyée, et le reste du buffer (= remains) est conservé pour le prochain appel.
 
-## Step 3 : Extraction d'une ligne complète
+## Step 3 : extracting a full line
 
 Une ligne est considérée comme complète lorsqu'un "\n" est rencontré ou lorsqu'on atteint la fin du fichier.
 
@@ -31,7 +31,7 @@ Une fonction d'extraction parcourt le buffer jusqu'à "\n" et renvoie une sous-c
 
 Le buffer est mis à jour en supprimant la ligne extraite, prête à recevoir la prochaine lecture.
 
-## Step 4 : Nettoyage de la mémoire
+## Step 4 : clean the memory
 
 Pour éviter toute fuite de mémoire, il faut libérer le buffer lorsque la lecture est terminée.
 
@@ -39,7 +39,7 @@ Une fois la dernière ligne retournée, le buffer est également libéré.
 
 Si une erreur survient, il faut libérer le buffer avant de retourner "NULL".
 
-## Step 5 : Bonus (gestion de plusieurs file descriptors)
+## Step 5 : why should we stop there ? let's do bonuses : manage several file descriptors
 
 Le projet bonus demande la gestion de plusieurs descripteurs de fichiers simultanément.
 
